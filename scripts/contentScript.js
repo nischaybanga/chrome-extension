@@ -63,5 +63,17 @@ chrome.storage.local.get("BlockedUrls", (data) => {
         if (data.BlockedUrls.some((e) => e.url === window.location.hostname && e.status === "BLOCKED"&& e.BlockTill>now)) {
             CloseTab()
         }
+        else if(data.BlockedUrls.some((e) => e.url === window.location.hostname && e.status === "BLOCKED"&& e.BlockTill<=now))
+        {
+            var arr=data.BlockedUrls;
+            const newarr=[];
+             arr.forEach((x,index)=>{
+                 if(x.url!==window.location.hostname)
+                 {
+                    newarr.push(x);
+                 }
+             })
+            chrome.storage.local.set({ BlockedUrls:newarr})
+        }
     }
 })

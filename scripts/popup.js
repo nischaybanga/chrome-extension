@@ -82,7 +82,7 @@ document.getElementById("btn").addEventListener("click", () => {
                             arr.forEach((e, index) => {
                                 if (e.url === WebsiteHostName && e.status === 'In_Progress') {
                                     var then = new Date();
-                                    then.setHours(24, 0, 0);
+                                    then.setHours(24, 0, 0,0);
                                     const blockTill = then.getTime()
                                     arr[index].status="BLOCKED";
                                     arr[index].BlockTill=blockTill;
