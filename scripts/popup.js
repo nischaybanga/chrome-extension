@@ -1,6 +1,8 @@
 var WebsiteUrl;
 var WebsiteHostName;
 
+
+//get the current tab
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     WebsiteUrl = tabs[0].url
     WebsiteHostName = new URL(tabs[0].url).hostname
@@ -32,9 +34,15 @@ document.getElementById("btn").addEventListener("click", () => {
     if (WebsiteUrl.toLowerCase().includes("chrome://")) {
         ShowError("You cannot block a chrome URL")
     }
+
+    //if it is not a chrome url
     else {
         chrome.storage.local.get("BlockedUrls", (data) => {
+
+            //if no object by the name BlockedUrls=>object of arrays=>array element is an object
             if (data.BlockedUrls === undefined) {
+
+
                 chrome.storage.local.set({ BlockedUrls: [{ status: "In_Progress", url: WebsiteHostName }] })
                 chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
                     chrome.tabs.sendMessage(
@@ -42,9 +50,12 @@ document.getElementById("btn").addEventListener("click", () => {
                         { from: "popup", subject: "startTimer" }
                     );
                 });
-                console.log("lol");
+
+
                 setTimeout(() => {
+                    //today's date
                     var then = new Date();
+                    //end of the day
                     then.setHours(24, 0, 0, 0);
                     const blockTill = then.getTime()
 
@@ -58,18 +69,23 @@ document.getElementById("btn").addEventListener("click", () => {
             }
             else {
                 
+                //if in progress
                 if (data.BlockedUrls.some((e) => e.url === WebsiteHostName && e.status === "In_Progress")) {
                     ShowError("This URL will be completely blocked after some time")
                 }
+
+                //if blocked
                 else if (data.BlockedUrls.some((e) => e.url === WebsiteHostName && e.status === "BLOCKED")) {
                     ShowError("This URL is Blocked completely")
                 }
+
+                //if new website to be blocked
                 else {
                     var then = new Date();
                     then.setHours(24, 0, 0, 0);
                     const blockTill = then.getTime()
                     chrome.storage.local.set({ BlockedUrls: [...data.BlockedUrls, { status: "In_Progress", url: WebsiteHostName,BlockTill: blockTill }] })
-                    console.log("lol1");
+    
                     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
                         chrome.tabs.sendMessage(
                             tabs[0].id,
