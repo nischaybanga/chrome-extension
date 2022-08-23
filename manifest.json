@@ -1,6 +1,6 @@
 {
     "name": "Stay Productive",
-    "description": "Stay productive description",
+    "description": "An extension that let's you block distracting sites",
     "version": "0.0.1",
     "manifest_version": 3,
     "action": {
